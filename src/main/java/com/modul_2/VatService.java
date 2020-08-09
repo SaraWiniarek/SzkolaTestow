@@ -1,36 +1,29 @@
 package com.modul_2;
 
-import java.math.*;
-
 public class VatService {
-//	BigDecimal vatValue;
-//	
+//	double vatValue;
 //	public VatService() {
-//		this.vatValue = new BigDecimal("0.23");
+//		this.vatValue = 0.23;
 //	}
 	
-	VatProvider vatProvider; //zewnêtrzny interface, aby móc u¿yæ zaœlepek
+	VatProvider vatProvider;
 	
 	public VatService(VatProvider vatProvider) {
 		this.vatProvider = vatProvider;
 	}
 	
-	public BigDecimal getGrossPriceForDefaultVat(Product product) throws Exception {
+	public double getGrossPriceForDefaultVat(Product product) throws Exception {
 		return calculateGrossPrice(product.getNetPrice(), vatProvider.getDefaultVat());
 	}
 	
-	public BigDecimal getGrossPrice(BigDecimal netPrice, String productType) throws Exception {
-		BigDecimal vatValue = vatProvider.getVatForType(productType);
+	public double getGrossPrice(double netPrice, String productType) throws Exception {
+		double vatValue = vatProvider.getVatForType(productType);
 		return calculateGrossPrice(netPrice, vatValue);
 	}
 	
-	private BigDecimal calculateGrossPrice(BigDecimal netPrice, BigDecimal vatValue) throws Exception {
-	MathContext m = new MathContext(4);
-	if(vatValue.compareTo(BigDecimal.ONE) == 1)
-		throw new Exception("VAT must be lower!");
-	
-	return netPrice.multiply((vatValue).add(BigDecimal.ONE)).round(m);
+	private double calculateGrossPrice(double netPrice, double vatValue) throws Exception {
+		if(vatValue >= 1)
+			throw new Exception("VAT must be lower!");
+		return netPrice * (1 + vatValue);
 	}
-	
-	
 }
